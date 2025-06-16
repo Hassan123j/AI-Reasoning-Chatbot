@@ -1,4 +1,4 @@
-# AI Legal Assistant
+# AI Legal Reasoning Assistant
 
 This project implements an AI Legal Assistant using a Retrieval-Augmented Generation (RAG) pipeline. It allows users to upload PDF legal documents, ask questions based on the content of those documents, and receive answers along with the AI's reasoning.
 
@@ -34,7 +34,7 @@ Follow these steps to set up and run the AI Legal Assistant on your local machin
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Hassan123j/AI-Reasoning-Chatbot.git
 cd ai-legal-assistant
 ```
 
