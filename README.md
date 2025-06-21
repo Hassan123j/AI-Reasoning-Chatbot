@@ -4,6 +4,8 @@ Hey! This is a little project I put together that uses AI to help you understand
 
 It’s built around something called Retrieval-Augmented Generation, but don’t worry about that. Basically, it means the AI looks through your document carefully before answering.
 
+See it in action: https://shorturl.at/tZoEu
+
 ---
 
 ## How to Get It Running
