@@ -1,54 +1,35 @@
 # AI Legal Reasoning Assistant
 
-This project implements an AI Legal Assistant using a Retrieval-Augmented Generation (RAG) pipeline. It allows users to upload PDF legal documents, ask questions based on the content of those documents, and receive answers along with the AI's reasoning.
+Hey! This is a little project I put together that uses AI to help you understand legal PDFs. You upload your legal document, ask questions about it, and the AI tries to give you clear answers and even explains how it got there.
 
-## Features
+It’s built around something called Retrieval-Augmented Generation, but don’t worry about that. Basically, it means the AI looks through your document carefully before answering.
 
-* **PDF Upload:** Upload your legal documents in PDF format.
-* **Question Answering:** Ask specific questions related to the content of the uploaded PDF.
-* **RAG Pipeline:** Leverages a RAG architecture for more accurate and context-aware responses.
-    * **Document Loading & Chunking:** Processes PDF documents, splitting them into manageable chunks.
-    * **Vector Database:** Stores document embeddings in a FAISS vector store for efficient similarity search.
-    * **LLM Integration:** Uses the DeepSeek R1 Distill model via the Groq API for generating answers.
-* **Clear UI:** A user-friendly interface built with Streamlit, providing real-time feedback and distinct sections for AI reasoning and the final answer.
-* **Custom Styling:** Enhanced visual appeal with custom CSS for chat bubbles and text elements.
+---
 
-## Architecture Overview
+## How to Get It Running
 
-The system consists of three main components:
+### What You’ll Need
 
-1.  **`frontend.py` (Streamlit Application):** Handles the user interface, PDF uploads, query input, and displays the AI's responses. It interacts with the `rag_pipeline` to get answers.
-2.  **`rag_pipeline.py` (RAG Logic):** Orchestrates the core RAG process. It defines how documents are retrieved from the vector database and how the Language Model (LLM) is prompted to generate answers based on the retrieved context. It uses the `ChatGroq` model.
-3.  **`vector_database.py` (Document Processing & Storage):** Responsible for loading PDF documents, splitting them into chunks, generating embeddings using `OllamaEmbeddings` (with `all-minilm` model), and storing these embeddings in a FAISS vector database.
+Make sure you’ve got Python installed version 3.8 or higher. Also, you’ll need Ollama (it’s the thing that helps the AI understand text better) and a Groq API key (this is for the AI model).
 
-## Setup and Installation
+### First Steps
 
-Follow these steps to set up and run the AI Legal Assistant on your local machine.
-
-### Prerequisites
-
-* Python 3.8+
-* Pip (Python package installer)
-* Ollama (for local embedding model)
-
-### 1. Clone the Repository
+Clone this repo to your machine:
 
 ```bash
 git clone https://github.com/Hassan123j/AI-Reasoning-Chatbot.git
 cd ai-legal-assistant
 ```
 
-### 2. Install Dependencies
-
-It's recommended to use a virtual environment.
+Then create a virtual environment and install everything:
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: `venv\Scripts\activate`
+source venv/bin/activate  # If you're on Windows, use `venv\Scripts\activate`
 pip install -r requirements.txt
 ```
 
-**Note:** A `requirements.txt` file is assumed to exist with the necessary libraries. If not, you will need to create one with the following content:
+If you don’t have the requirements file, here’s what you’ll want:
 
 ```
 streamlit
@@ -57,94 +38,86 @@ langchain-community
 langchain-text-splitters
 langchain-ollama
 langchain-core
-faiss-cpu # or faiss-gpu if you have a compatible GPU
-python-dotenv # if you use .env for API key
+faiss-cpu  # or faiss-gpu if your machine can handle it
+python-dotenv
 ```
 
-### 3. Set up Ollama for Embeddings
+### Setting Up Ollama
 
-The `vector_database.py` uses Ollama to run the `all-minilm` embedding model locally.
+Download Ollama from their site and install it. Then grab the embedding model with:
 
-* **Download and Install Ollama:** Follow the instructions on the [Ollama website](https://ollama.com/download) to install Ollama for your operating system.
-* **Pull the `all-minilm` model:** Once Ollama is installed, open your terminal and run:
-    ```bash
-    ollama pull all-minilm
-    ```
+```bash
+ollama pull all-minilm
+```
 
-### 4. Configure Groq API Key
+### Groq API Key
 
-The `rag_pipeline.py` uses the Groq API for the LLM.
+Sign up at Groq.com and get your API key. Then either put it in a `.env` file like this:
 
-* **Get a Groq API Key:** Sign up on the [Groq website](https://groq.com/) to obtain your API key.
-* **Set as Environment Variable:**
-    * **Recommended:** Create a `.env` file in the root directory of your project and add your API key:
-        ```
-        GROQ_API_KEY="your_groq_api_key_here"
-        ```
-        Ensure `python-dotenv` is installed (`pip install python-dotenv`), and `load_dotenv()` is uncommented in `rag_pipeline.py` if you choose this method.
-    * **Alternatively (less secure for production):** Set it directly in your shell before running the app:
-        ```bash
-        export GROQ_API_KEY="your_groq_api_key_here" # For Linux/macOS
-        # set GROQ_API_KEY="your_groq_api_key_here" # For Windows CMD
-        # $env:GROQ_API_KEY="your_groq_api_key_here" # For Windows PowerShell
-        ```
+```
+GROQ_API_KEY="your_api_key_here"
+```
 
-### 5. Place Your PDF Documents
+or export it in your terminal before you run the app:
 
-The `vector_database.py` expects a `pdfs/` directory to exist.
-* Create a `pdfs` folder in your project's root directory:
-    ```bash
-    mkdir pdfs
-    ```
-* Place the `universal_declaration_of_human_rights.pdf` file (or any other PDF you want to use initially) inside this `pdfs/` directory.
+```bash
+export GROQ_API_KEY="your_api_key_here"
+```
 
-### 6. Initialize the Vector Database
+### Adding PDFs
 
-The `vector_database.py` script needs to be run *once* to process the initial PDF and create the FAISS vector store.
+Create a folder called `pdfs` and put your legal PDFs there. Like this:
+
+```bash
+mkdir pdfs
+```
+
+Throw in whatever PDFs you want to ask questions about.
+
+### Build the Database
+
+Run this once to get your PDFs ready for searching:
 
 ```bash
 python vector_database.py
 ```
-This will create a `vectorstore/db_faiss` directory containing your vector database.
 
-### 7. Run the Streamlit Application
+It’ll slice up the PDFs, make some smart vectors, and save them.
+
+### Launch the App
+
+Finally, start the app with:
 
 ```bash
 streamlit run frontend.py
 ```
 
-This will open the Streamlit application in your web browser, usually at `http://localhost:8501`.
+Your browser should pop up with the interface where you can upload docs, ask questions, and get answers.
 
-## Usage
+---
 
-1.  **Upload PDF:** Click the "Upload a PDF document" button and select your PDF file.
-2.  **Enter Question:** Type your legal question into the text area.
-3.  **Ask:** Click the "Ask" button.
-4.  **View Response:** The AI's reasoning will appear first, followed by the "Actual Answer."
+## How To Use It
 
-## Customization
+Just upload your PDF, type whatever you want to ask, and hit the Ask button. The AI will show you how it came up with the answer and then the answer itself.
 
-* **LLM Model:** You can change the `model` parameter in `rag_pipeline.py` to use other Groq-supported models.
-* **Embedding Model:** In `vector_database.py`, modify `ollama_model_name` to use a different local Ollama embedding model. Remember to `ollama pull` the new model.
-* **Chunking Strategy:** Adjust `chunk_size` and `chunk_overlap` in `vector_database.py` to optimize document splitting for your specific use case.
-* **Prompt Template:** Modify `custom_prompt_template` in `rag_pipeline.py` to guide the LLM's response style and constraints.
-* **UI/CSS:** Customize the CSS in `frontend.py` to change the appearance of the chat interface.
+---
 
-## Project Structure
+## If You Wanna Tweak Stuff
 
-```
-.
-├── frontend.py
-├── rag_pipeline.py
-├── vector_database.py
-├── pdfs/
-│   └── universal_declaration_of_human_rights.pdf # Example PDF
-├── vectorstore/
-│   └── db_faiss/ # FAISS vector database files (generated)
-├── .env                  # For storing API keys (optional, but recommended)
-└── requirements.txt      # Python dependencies
-```
+Feel free to swap the AI model or embedding model if you want. You can also change how the PDFs get sliced or how the AI responds by editing some files no pressure, it’s all in the code.
 
-## Contributing
+---
 
-Feel free to fork this repository, submit pull requests, or open issues to improve the project.
+## File Rundown
+
+* `frontend.py` — the UI you interact with
+* `rag_pipeline.py` — this is the AI brain that figures out answers
+* `vector_database.py` — turns your PDFs into searchable bits
+* `pdfs/` — drop your PDFs here
+* `vectorstore/` — where all the data is saved after processing
+
+---
+
+## Help Wanted
+
+If you see ways to improve, just jump in! Fork, raise issues, or send a pull request. I’m happy to collaborate.
